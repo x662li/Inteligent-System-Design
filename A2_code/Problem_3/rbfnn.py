@@ -12,7 +12,7 @@ class Rbfnn():
     
     def rbf(self, X, center, width):
         norm = np.sqrt((X[0] - center[0])**2 + (X[1] - center[1])**2)
-        return np.exp(-norm / (2*width**2))
+        return np.exp(-norm / (2*(width**2)))
     
     def compute_G(self, X):
         G = np.zeros((len(X), len(self.rbf_param)))
