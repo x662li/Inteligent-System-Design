@@ -35,9 +35,10 @@ class Som():
             # iter each color
             for clr in input_clrs:
                 # find winner coord
-                dists = np.array([self.calc_diff(item, clr) for row in self.map for item in row]).reshape(self.nx, self.ny)
-                winners = np.where(dists == np.amin(dists))
-                win_coord = (np.random.choice(winners[0]), np.random.choice(winners[0])) # randomly pick a winner if there are more than one
+                diffs = np.array([self.calc_diff(item, clr) for row in self.map for item in row]).reshape(self.nx, self.ny)
+                winners = np.where(diffs == np.amin(diffs))
+                pick = np.random.randint(len(winners[0]))
+                win_coord = (winners[0][pick], winners[1][pick]) # randomly pick a winner if there are more than one
                 # update weights
                 sigma = sigma_0 * np.exp(-epoch / num_epoch)
                 alpha = alpha_0 * np.exp(-epoch / num_epoch)
