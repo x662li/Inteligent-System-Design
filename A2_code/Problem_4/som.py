@@ -32,24 +32,24 @@ class Som():
         for epoch in range(num_epoch):
             if (epoch % 10 == 0):
                 print("epoch number: " + str(epoch))
+            sigma = sigma_0 * np.exp(-epoch / num_epoch)
+            alpha = alpha_0 * np.exp(-epoch / num_epoch)
             # iter each color
             for clr in input_clrs:
                 # find winner coord
+                clr = [cl / 255 for cl in clr]
                 diffs = np.array([self.calc_diff(item, clr) for row in self.map for item in row]).reshape(self.nx, self.ny)
                 winners = np.where(diffs == np.amin(diffs))
                 pick = np.random.randint(len(winners[0]))
                 win_coord = (winners[0][pick], winners[1][pick]) # randomly pick a winner if there are more than one
                 # update weights
-                sigma = sigma_0 * np.exp(-epoch / num_epoch)
-                alpha = alpha_0 * np.exp(-epoch / num_epoch)
-                # 以下代码运行起来肯定贼**慢，懒得改了
                 for i in range(self.map.shape[0]):
                     for j in range(self.map.shape[1]):
                         dist = self.calc_dist(win_coord[0], win_coord[1], i, j)
                         topo = self.topo_neigh(dist, sigma)
-                        R_dif = self.map[win_coord[0], win_coord[1]][0] - self.map[i, j][0]
-                        G_dif = self.map[win_coord[0], win_coord[1]][1] - self.map[i, j][1]
-                        B_dif = self.map[win_coord[0], win_coord[1]][2] - self.map[i, j][2]
+                        R_dif = clr[0] - self.map[i, j][0]
+                        G_dif = clr[1] - self.map[i, j][1]
+                        B_dif = clr[2] - self.map[i, j][2]
                         self.map[i, j][0] = self.map[i, j][0] + alpha * topo * R_dif
                         self.map[i, j][1] = self.map[i, j][1] + alpha * topo * G_dif
                         self.map[i, j][2] = self.map[i, j][2] + alpha * topo * B_dif
